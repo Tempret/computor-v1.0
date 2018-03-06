@@ -120,27 +120,29 @@ class Equation():
 		c = c_mon[0].get_coef() if c_mon else 0
 
 		if not a:
-			return [c / b]
+			print('Result 1:', (c / b) * -1)
+			return [(c / b) * -1]
 		else:
 			discriminant = b ** 2 - 4 * a * c
 
+			print('ARGS', a, b, c, discriminant)
+
 			if discriminant > 0:
 				print('Discriminant > 0')
-				result_1 = (-1 * b + Decimal(float(discriminant) ** 0.5)) / 2 * a
-				result_2 = (-1 * b - Decimal(float(discriminant) ** 0.5)) / 2 * a
-				print('Results', result_1, result_2)
+				result_1 = ((-1 * b) + (Decimal(float(discriminant) ** 0.5))) / (2 * a)
+				result_2 = ((-1 * b) - (Decimal(float(discriminant) ** 0.5))) / (2 * a)
+				print('Result 1:', result_1)
+				print('Result 2:', result_2)
 				return [result_1, result_2]
 			elif discriminant == 0:
 				print('Discriminant = 0')
-				result = -1 * b / 2 * a
-				print('Result', result)
+				result = (-1 * b) / (2 * a)
+				print('Result 1:', result)
 				return [result]
 			else:
 				print('Discriminant < 0')
-				im_part = Decimal(float(abs(discriminant)) ** 0.5) / 2 * a
-				re_part = -1 * b / 2 * a
-				print('Result', re_part, '+' ,im_part, 'i')
+				im_part = Decimal(float(abs(discriminant)) ** 0.5) / (2 * a)
+				re_part = (-1 * b) / (2 * a)
+				print('Result 1:', re_part, '+' ,im_part, 'i')
+				print('Result 2:', re_part, '-' ,im_part, 'i')
 				return [im_part, re_part]
-			print('Discriminant', discriminant)
-
-		print('A = %d B = %d C = %d' % (a, b, c))

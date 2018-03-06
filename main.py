@@ -4,8 +4,9 @@ from modules.class_Equation import Equation
 from collections import Counter
 
 # input = ' +  5 * X^0 - X - 9.3  * 23  * X^12 / X^2 = -1   + 1 * X^32'
-
-input = 'x^2 + 3 * x +3 = 0'
+#1*7.88 mist
+#input = '7.88 * x^2 + 3 * x^2 + 3 = 0 '
+input = '2*x^2 + 4*x+7 = 0'
 
 equation = Equation(input)
 
