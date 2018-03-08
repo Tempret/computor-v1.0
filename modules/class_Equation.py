@@ -26,6 +26,9 @@ class Equation():
 		if two_sides[1][0] != '-' and two_sides[1][0] != '+':
 			two_sides[1] = '+' + two_sides[1]
 
+		if re.search('[+\-]\s*=', input) or re.search('[+\-]{2}', input):
+			raise SyntaxError('Wrong sequence of signs expected')
+
 		two_sides = '='.join(two_sides)
 
 		signes = self._make_signes(two_sides)
@@ -38,12 +41,13 @@ class Equation():
 
 		self.monomials.sort(key=lambda x: x.pow)
 
-		if self.get_max_pow() > 2:
-			raise ValueError("Max pow is more than two. Cant't solve this equation")
-		else:
-			print("I can solve")
-			self.simple_algo()
+		max_pow = self.get_max_pow()
 
+		if not max_pow and self.monomials[0].d_coef:
+			raise ValueError("Equation isn\'t identical")
+
+		elif max_pow > 2:
+			raise ValueError("Max pow is more than two. Cant't solve this equation")
 
 	def _make_signes(self, two_sides):
 
@@ -111,6 +115,10 @@ class Equation():
 
 	def simple_algo(self):
 
+		if not self.get_max_pow() and not self.monomials[0].d_coef:
+			print('All real numbers are solution')
+			return []
+
 		a_mon = list(filter(lambda x: x.pow == 2, self.monomials))
 		b_mon = list(filter(lambda x: x.pow == 1, self.monomials))
 		c_mon = list(filter(lambda x: x.pow == 0, self.monomials))
@@ -120,29 +128,41 @@ class Equation():
 		c = c_mon[0].get_coef() if c_mon else 0
 
 		if not a:
-			print('Result 1:', (c / b) * -1)
+			print('The solution is:', (c / b) * -1, sep="\n")
 			return [(c / b) * -1]
 		else:
 			discriminant = b ** 2 - 4 * a * c
 
-			print('ARGS', a, b, c, discriminant)
+			print(discriminant, a, b, c)
 
 			if discriminant > 0:
-				print('Discriminant > 0')
 				result_1 = ((-1 * b) + (Decimal(float(discriminant) ** 0.5))) / (2 * a)
 				result_2 = ((-1 * b) - (Decimal(float(discriminant) ** 0.5))) / (2 * a)
-				print('Result 1:', result_1)
-				print('Result 2:', result_2)
+				print('Discriminant is strictly positive, the two solutions are:', result_1, result_2, sep="\n")
 				return [result_1, result_2]
 			elif discriminant == 0:
-				print('Discriminant = 0')
 				result = (-1 * b) / (2 * a)
-				print('Result 1:', result)
+				print('Discriminant equal 0, the only one solution are:', result, sep="\n")
 				return [result]
 			else:
-				print('Discriminant < 0')
 				im_part = Decimal(float(abs(discriminant)) ** 0.5) / (2 * a)
-				re_part = (-1 * b) / (2 * a)
-				print('Result 1:', re_part, '+' ,im_part, 'i')
-				print('Result 2:', re_part, '-' ,im_part, 'i')
+				re_part = Decimal((-1 * b) / (2 * a))
+				print('Discriminant is strictly negative, the two solutions are:')
+				if b:
+					print(re_part, '+' ,im_part, 'i')
+					print(re_part, '-' ,im_part, 'i')
+				else:
+					print(im_part, 'i')
+					print('-' ,im_part, 'i')
 				return [im_part, re_part]
+
+	def __str__(self):
+		string = []
+
+		for index, monomial in enumerate(self.monomials):
+			if not index and monomial.sign == '+':
+				string.append(str(monomial)[2:])
+			else:
+				string.append(str(monomial))
+		string.append('= 0')
+		return " ".join(string)
