@@ -161,8 +161,14 @@ class Equation():
 					print(re_part, '+' ,im_part, '* i')
 					print(re_part, '-' ,im_part, '* i')
 				else:
-					print(im_part, 'i')
-					print('-' ,im_part, 'i')
+					if im_part > 0:
+						print(im_part, 'i')
+						print('-' ,im_part, 'i')
+					elif im_part < 0:
+						print(im_part, 'i')
+						print((-1) * im_part, 'i')
+					else:
+						print('0')
 				return [-1, im_part, re_part]
 
 	def __str__(self):
