@@ -9,10 +9,13 @@ class Monomial():
 	variable = None
 	pow = None
 	sign = None
+	d_sign = 0
 
 	def __init__(self, arg, sign):
 
 		self.sign = sign
+
+		self.d_sign = -1 if sign == '-' else 1
 
 		if type(arg) == type(str('')):
 
@@ -43,9 +46,6 @@ class Monomial():
 				raise ValueError('Required fields in initial dictionary is missing')
 		else:
 			raise TypeError('Cant init Monomial with argument type ' + type(arg))
-
-	def __str__(self):
-		return str(self.d_coef)
 
 	def _is_number(self, number):
 		try:
@@ -108,10 +108,22 @@ class Monomial():
 
 	def __str__(self):
 
-		if self.variable:
-			return '%s %s * %s^%d' % (self.sign, str(self.d_coef), self.variable , self.pow)
-		else:
-			return '%s %s' % (self.sign, str(self.d_coef))
+		result = [self.sign]
+
+		if self.d_coef == 0:
+			return ''
+		elif self.d_coef != 1:
+			result.append(str(self.d_coef))
+
+		if self.pow > 1:
+			if self.d_coef == 1:
+				result.append('%s^%d' % (self.variable, self.pow))
+			else:
+				result.append('* %s^%d' % (self.variable, self.pow))
+		elif self.pow == 1:
+			result.append('* % s' % (self.variable))
+
+		return ' '.join(result)
 
 	def __add__(self, other):
 		if self.pow == other.pow and self.variable == other.variable:

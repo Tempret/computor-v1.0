@@ -1,27 +1,35 @@
 #!/usr/bin/env python3
 
 from modules.class_Equation import Equation
-import sys
+from modules.show_graph import show_graph
+import argparse
 
-# input = '1 = 1'
-#1*7.88 mist
-#input = '7.88 * x^2 + 3 * x^2 + 3 = 0 '
-# input = '+2*x^2  =  -  *x+7 +- + + 0'
 
 
 if __name__ == "__main__":
 
-	if len(sys.argv) == 2:
-		input = sys.argv[1]
-	else:
-		print('usage: ./computor "EQUATION"')
-		sys.exit(0)
+	parser = argparse.ArgumentParser(description="""Computor V-1.
+													The program will display solution(s) of polynomial equation
+													""", prog="./computor")
+	parser.add_argument('eq', metavar='"Equation"', type=str,
+						help='an polynomial equation')
+	parser.add_argument('-g', dest='graph', action='store_const',
+						const=True, default=False,
+						help='show graph of equation function')
+
+	args = parser.parse_args()
 
 	try:
-		equation = Equation(input)
+		equation = Equation(args.eq)
 	except (ValueError, SyntaxError) as err:
-		print(err)
+		print("Error:", err)
 	else:
 		print("Reduced form:", equation)
 		print("Polinomial degree:", equation.get_max_pow())
-		equation.simple_algo()
+		try:
+			results = equation.simple_algo()
+		except ValueError as err:
+			print('Error while find sollution:', err)
+		else:
+			if args.graph:
+				show_graph(equation, results)

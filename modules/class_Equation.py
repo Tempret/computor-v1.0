@@ -108,16 +108,21 @@ class Equation():
 					result = result + pow_filter[i]
 				new_monomials.append(result)
 
+		new_monomials = list(filter(lambda x: str(x), new_monomials))
+
 		self.monomials = new_monomials
 
 	def get_max_pow(self):
 		return max(map(lambda x: x.pow, [el for el in self.monomials]))
 
-	def simple_algo(self):
+	def get_monomial(self, pow):
+		search = list(filter(lambda x: x.pow == pow, self.monomials))
+		if search:
+			return search[0]
+		else:
+			return Monomial({'d_koef': 0, 'variable': 'x', 'pow': 0}, '+')
 
-		if not self.get_max_pow() and not self.monomials[0].d_coef:
-			print('All real numbers are solution')
-			return []
+	def simple_algo(self):
 
 		a_mon = list(filter(lambda x: x.pow == 2, self.monomials))
 		b_mon = list(filter(lambda x: x.pow == 1, self.monomials))
@@ -127,34 +132,38 @@ class Equation():
 		b = b_mon[0].get_coef() if b_mon else 0
 		c = c_mon[0].get_coef() if c_mon else 0
 
+		if not a and not b and not c:
+			print('All real numbers are solution')
+			return []
+
 		if not a:
+			if not b:
+				raise ValueError('Trying divide by zero')
 			print('The solution is:', (c / b) * -1, sep="\n")
-			return [(c / b) * -1]
+			return [2, (c / b) * -1]
 		else:
 			discriminant = b ** 2 - 4 * a * c
-
-			print(discriminant, a, b, c)
 
 			if discriminant > 0:
 				result_1 = ((-1 * b) + (Decimal(float(discriminant) ** 0.5))) / (2 * a)
 				result_2 = ((-1 * b) - (Decimal(float(discriminant) ** 0.5))) / (2 * a)
 				print('Discriminant is strictly positive, the two solutions are:', result_1, result_2, sep="\n")
-				return [result_1, result_2]
+				return [1, result_1, result_2]
 			elif discriminant == 0:
 				result = (-1 * b) / (2 * a)
 				print('Discriminant equal 0, the only one solution are:', result, sep="\n")
-				return [result]
+				return [0, result]
 			else:
 				im_part = Decimal(float(abs(discriminant)) ** 0.5) / (2 * a)
 				re_part = Decimal((-1 * b) / (2 * a))
-				print('Discriminant is strictly negative, the two solutions are:')
+				print('Discriminant is strictly negative, the two complex solutions are:')
 				if b:
-					print(re_part, '+' ,im_part, 'i')
-					print(re_part, '-' ,im_part, 'i')
+					print(re_part, '+' ,im_part, '* i')
+					print(re_part, '-' ,im_part, '* i')
 				else:
 					print(im_part, 'i')
 					print('-' ,im_part, 'i')
-				return [im_part, re_part]
+				return [-1, im_part, re_part]
 
 	def __str__(self):
 		string = []
