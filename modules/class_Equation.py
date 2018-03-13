@@ -3,7 +3,6 @@
 import re
 from modules.class_Monomial import Monomial
 from collections import Counter
-from math import sqrt
 from decimal import Decimal
 
 class Equation():
@@ -37,7 +36,7 @@ class Equation():
 
 		self._set_variables()
 
-		self._normalize_equasion()
+		self._normalize_equation()
 
 		self.monomials.sort(key=lambda x: x.pow)
 
@@ -82,12 +81,12 @@ class Equation():
 				if el.variable == None:
 					el.variable = variable
 				else:
-					raise SyntaxError('Was expected more than one variable type')
+					raise SyntaxError('Expected more than one variable type')
 
 		else:
-			raise SyntaxError('Was expected at least one variable for solve equation')
+			raise SyntaxError('Expected at least one variable for solve equation')
 
-	def _normalize_equasion(self):
+	def _normalize_equation(self):
 
 		new_monomials = []
 
@@ -109,6 +108,9 @@ class Equation():
 				new_monomials.append(result)
 
 		new_monomials = list(filter(lambda x: str(x), new_monomials))
+
+		if not new_monomials:
+			new_monomials = [Monomial(0, '+')]
 
 		self.monomials = new_monomials
 
@@ -139,23 +141,30 @@ class Equation():
 		if not a:
 			if not b:
 				raise ValueError('Trying divide by zero')
-			print('The solution is:', (c / b) * -1, sep="\n")
-			return [2, (c / b) * -1]
+			result = (c / b) * -1
+			result = result if result else int(result)
+			print('The solution is:', result, sep="\n")
+			return [2, result]
 		else:
 			discriminant = b ** 2 - 4 * a * c
 
 			if discriminant > 0:
 				result_1 = ((-1 * b) + (Decimal(float(discriminant) ** 0.5))) / (2 * a)
 				result_2 = ((-1 * b) - (Decimal(float(discriminant) ** 0.5))) / (2 * a)
+				result_1 = result_1 if result_1 else int(result_1)
+				result_2 = result_2 if result_2 else int(result_2)
 				print('Discriminant is strictly positive, the two solutions are:', result_1, result_2, sep="\n")
 				return [1, result_1, result_2]
 			elif discriminant == 0:
 				result = (-1 * b) / (2 * a)
+				result = result if result else int(result)
 				print('Discriminant equal 0, the only one solution are:', result, sep="\n")
 				return [0, result]
 			else:
 				im_part = Decimal(float(abs(discriminant)) ** 0.5) / (2 * a)
 				re_part = Decimal((-1 * b) / (2 * a))
+				im_part = im_part if im_part else int(im_part)
+				re_part = re_part if re_part else int(re_part)
 				print('Discriminant is strictly negative, the two complex solutions are:')
 				if b:
 					print(re_part, '+' ,im_part, '* i')
@@ -176,5 +185,9 @@ class Equation():
 				string.append(str(monomial)[2:])
 			else:
 				string.append(str(monomial))
+
+		if string == ['']:
+			string.append('0')
+
 		string.append('= 0')
 		return " ".join(string)

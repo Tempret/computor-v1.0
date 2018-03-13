@@ -11,7 +11,7 @@ class Monomial():
 	sign = None
 	d_sign = 0
 
-	def __init__(self, arg, sign):
+	def __init__(self, arg, sign, var='X'):
 
 		self.sign = sign
 
@@ -44,6 +44,11 @@ class Monomial():
 				self.variable = arg['variable']
 			else:
 				raise ValueError('Required fields in initial dictionary is missing')
+
+		elif arg == 0:
+				self.d_coef = 0
+				self.pow = 0
+				self.variable = var
 		else:
 			raise TypeError('Cant init Monomial with argument type ' + type(arg))
 
@@ -114,6 +119,8 @@ class Monomial():
 			return ''
 		elif self.d_coef != 1:
 			result.append(str(self.d_coef))
+		elif self.d_coef == 1 and self.pow == 0:
+			result.append(str(self.d_coef))
 
 		if self.pow > 1:
 			if self.d_coef == 1:
@@ -121,7 +128,10 @@ class Monomial():
 			else:
 				result.append('* %s^%d' % (self.variable, self.pow))
 		elif self.pow == 1:
-			result.append('* % s' % (self.variable))
+			if self.d_coef == 1:
+				result.append('%s' % self.variable)
+			else:
+				result.append('* %s' % self.variable)
 
 		return ' '.join(result)
 

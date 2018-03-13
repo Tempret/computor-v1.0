@@ -1,5 +1,9 @@
+
+
 import matplotlib.pyplot as plt
 import numpy as np
+
+
 
 NEGATIVE = -1
 ZERO = 0
@@ -31,4 +35,6 @@ def show_graph(equation, results):
 	plt.ylabel(r'$f('+ var +')$')
 	plt.title(r'$f('+ var +')='+ str(equation)[:-3] + '$')
 	plt.grid(True)
+	fig = plt.gcf()
+	fig.canvas.set_window_title('Computor V-1')
 	plt.show()
